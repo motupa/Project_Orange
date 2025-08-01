@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEACE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <video id="bg-video" autoplay loop muted playsinline>
+        <source src="video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <section>
+        <div id="chat">
+            <div class="chat-container">
+                <div id="hoveronhere">
+                    <h2 class="bg-text">Hi Jina, I am ready to speak with you</h2><br>
+                    <form class="input-area" onsubmit="event.preventDefault(); sendMessage();">
+                        <label for="user-input" class="visually-hidden">Ask Questions to Peace</label>
+                        <input type="text" id="user-input" placeholder="Ask Questions to Peace" autocomplete="off" aria-label="Ask Questions to Peace" />
+                        <button type="submit" style="background-image: url('./img2.jpg');">Send</button>
+                        <button type="button" onclick="clearChat()" style="background-image: url('./img2.jpg');">Clear</button>
+                        <button type="button" id="mic-btn" title="Speak" style="background-image: url('./img2.jpg');">Mic</button>
+                        <button type="button" id="speak-btn" title="Listen" style="background-image: url('./img2.jpg');">Speech</button>
+                    </form>
+                </div>
+                <div id="chat-box" class="chat-box" role="log" aria-live="polite"></div>
+                <div class="chat-header"></div>
+            </div>
+        </div>
+    </section>
+
+    <script src="./script.js"></script>
+</body>
+
+</html>
