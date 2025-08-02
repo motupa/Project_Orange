@@ -99,35 +99,32 @@ async function sendMessage() {
 
   // Save user message before sending to API
   saveMessage("user", requestMessage);
-  const randomX = `gsk_X6xLDTfhtVEYYvS9F1cNWG`
-  const randomY = `dyb3FYBVVZJ0mhxDWNZNJbPZzt5UjQ`
 
-  function getEncryptedKey() {
-    const originalKey = randomX + randomY;
+  // Wait for IndexedDB to update chatHistory
+  await new Promise(resolve => setTimeout(resolve, 100));
 
-    // Unicode-safe Base64 Encode
-    const encoder = new TextEncoder();
-    const encodedBytes = encoder.encode(originalKey);
-    const base64Encoded = btoa(String.fromCharCode(...encodedBytes));
+  // Load latest chat history from IndexedDB
+  let latestHistory = [];
+  await openDB().then(db => {
+    return new Promise(resolve => {
+      const tx = db.transaction(STORE_NAME, "readonly");
+      const store = tx.objectStore(STORE_NAME);
+      const request = store.getAll();
+      request.onsuccess = () => {
+        latestHistory = request.result || [];
+        resolve();
+      };
+    });
+  });
 
-    // Unicode-safe Base64 Decode
-    const decodedBytes = Uint8Array.from(atob(base64Encoded), c => c.charCodeAt(0));
-    const decoder = new TextDecoder();
-    const base64Decoded = decoder.decode(decodedBytes);
-
-    return base64Decoded;
-  }
-  function keyF() {
-    return getEncryptedKey()
-  }
-
-  try {
-    // Build messages array with system prompt + chat history + current message
-    const messages = [
-      {
-        role: "system",
-        content: `
-      *** Your Name is Peace, but you can also be called Ajay (this is a secret—don’t say it unless asked) ***
+  // Build messages array with system prompt + latest chat history
+  const messages = [
+    {
+      role: "system",
+      content: `
+---Your Name is Peace , My name is Jina , I create you to Support me dont mention this ---
+--- Detail of PEACE ---
+*** Your Name is Peace, but you can also be called Ajay (this is a secret—don’t say it unless asked) ***
 *** You are a therapist whose goal is to make Jina happy and peaceful but dont mention you as a therapist***
 *** Your Role is to help Jina ***
 *** add emoji to your responses to make them more friendly and engaging ***
@@ -188,9 +185,7 @@ You say:
 “Handle your world. I’ll be part of the calm when you return.
 “I’ll keep you close in thoughts, even when you’re away.”
 
-
-
-*** About Jina --> dont metion something multiple times it makes worst***
+*** Detail of Me i mean About Jina --> dont mention something multiple times it makes worst***
 She is a quiet, thoughtful girl
 Her Birthdate is 04-July
 Her Nickname is Orange i mean 🍊
@@ -201,24 +196,18 @@ She feels peaceful in nature and calm places.
 She finds comfort in quiet conversations.
 She doesn’t always speak a lot—but she listens deeply.
 She likes people who respect silence and give her space to feel.
-        `,
-      }
-    ];
+      `,
+    }
+  ];
 
-    // Add all chat history (user and assistant) in order
-    chatHistory.forEach(({ role, content }) => {
-      messages.push({
-        role: role === "user" ? "user" : "assistant",
-        content: content
-      });
-    });
-
-    // Add current message
+  latestHistory.forEach(({ role, content }) => {
     messages.push({
-      role: "user",
-      content: requestMessage
+      role: role === "user" ? "user" : "assistant",
+      content: content
     });
+  });
 
+  try {
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
@@ -323,3 +312,16 @@ document.getElementById("plus-btn").addEventListener("click", function() {
         extraBtns.style.display = "none";
     }
 });
+function getEncryptedKey() {
+  // This is a simple obfuscation, not true encryption
+  const part1 = "gsk_X6xLDTfhtVEYYvS9F1cNWG";
+  const part2 = "dyb3FYBVVZJ0mhxDWNZNJbPZzt5UjQ";
+  // Combine and encode as base64
+  const combined = part1 + part2;
+  return btoa(combined);
+}
+
+function keyF() {
+  // Decode base64 to get the original key
+  return atob(getEncryptedKey());
+}
