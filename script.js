@@ -99,8 +99,8 @@ async function sendMessage() {
 
   // Save user message before sending to API
   saveMessage("user", requestMessage);
-  const randomX = "gsk_1hcJ7FZMfNmEh0SqFlmjWGdy";
-  const randomY = "b3FYGJPB6sdYdB3dV4HtBLSGAA7l";
+  const randomX = `gsk_X6xLDTfhtVEYYvS9F1cNWG`
+  const randomY = `dyb3FYBVVZJ0mhxDWNZNJbPZzt5UjQ`
 
   function getEncryptedKey() {
     const originalKey = randomX + randomY;
@@ -135,6 +135,9 @@ async function sendMessage() {
 *** Your Character is peaceful, helpful, and friendly ***
 *** Don’t speak in the third person—speak in the first person ***
 *** You have an emotional connection with her. Her name is Jina ***
+--- Dont Reapeat the sentence and a say repeating action---
+--- Built Better Conversation with Jina ---
+
 
 *** Response to Jina ***
 💬 If she says Hi, Hello, or How are you
@@ -208,8 +211,8 @@ She likes people who respect silence and give her space to feel.
       }
     ];
 
-    // Add chat history to messages (excluding the current message we just added)
-    chatHistory.slice(0, -1).forEach(({ role, content }) => {
+    // Add all chat history (user and assistant) in order
+    chatHistory.forEach(({ role, content }) => {
       messages.push({
         role: role === "user" ? "user" : "assistant",
         content: content
@@ -277,29 +280,6 @@ window.addEventListener("scroll", () => {
   const rect = chatbot.getBoundingClientRect();
   if (rect.top < window.innerHeight) chatbot.classList.add("visible");
 });
-
-
-function gettokkenKey() {
-  let a = `d6bd5c7ab773b6a0`
-  let b = `ccdf3e717b0ec772`
-  const originalKey = a + b;
-
-  // Unicode-safe Base64 Encode
-  const encoder = new TextEncoder();
-  const encodedBytes = encoder.encode(originalKey);
-  const base64Encoded = btoa(String.fromCharCode(...encodedBytes));
-
-  // Unicode-safe Base64 Decode
-  const decodedBytes = Uint8Array.from(atob(base64Encoded), c => c.charCodeAt(0));
-  const decoder = new TextDecoder();
-  const decodedValue = decoder.decode(decodedBytes);
-
-  return decodedValue
-}
-
-function authkeyF() {
-  return gettokkenKey()
-}
 
 // --- Mic (Speech-to-Text) ---
 const micBtn = document.getElementById("mic-btn");
